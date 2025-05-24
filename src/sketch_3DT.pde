@@ -20,13 +20,15 @@ float xAngle=0, yAngle=0, zAngle=0;
 Matrix rotationMatrix, xRotation, yRotation, zRotation;
 Matrix transMatrix;
 
+boolean rightKeyDown = false, leftKeyDown = false, upKeyDown = false, downKeyDown = false;
+
 
 float zoom;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
   size(800, 800);
-  // size(800 ,800, P2D);
+  size(800 ,800, P2D);
 
   zoom = 1;
 
@@ -45,8 +47,9 @@ void setup() {
 
   int[][] funArr = {{1, 2,0},{1, 0,2}}; //{1, 0,2}
   F = new Function(funArr);
+  funFont = createFont("Arial", 20, true);
+  textFont(funFont);
   
-  funFont = loadFont("ArialRoundedMTBold-48.vlw");
   funName = F.printFunction();
   Mishor = F.getMishor(15, 30);
   kitsonPoints = new PVector[30*30];
@@ -111,7 +114,15 @@ float[][] transMat() {//from R3 to R2
 void draw() {
   background(255);
 
-
+  if (rightKeyDown) {
+    zAngle += 1;
+  } else if (leftKeyDown) {
+    zAngle -= 1;
+  } else if (upKeyDown) {
+    yAngle -= 1;
+  } else if (downKeyDown) {
+    yAngle += 1;
+  }
 
   xRotation = new Matrix(xTrans(radians(xAngle)));
   yRotation = new Matrix(yTrans(radians(yAngle)));
@@ -140,7 +151,6 @@ void draw() {
 
   //write the function on the screen
   fill(0);
-  textFont(funFont, 20);
   text(funName, 20, 40);
 
   text("X -", width-60, height-105);
@@ -231,19 +241,35 @@ void drawLine(PVector v1, PVector v2) {
 void keyPressed() {
 
   if (keyCode == RIGHT) {
-    zAngle += 1;
+    rightKeyDown = true;
+    // zAngle += 1;
   } else if (keyCode == LEFT) {
-    zAngle -= 1;
+    leftKeyDown = true;
+    // zAngle -= 1;
   } else if (keyCode == UP) {
-    yAngle -= 1;
+    upKeyDown = true;
+    // yAngle -= 1;
   } else if (keyCode == DOWN) {
-    yAngle += 1;
+    downKeyDown = true;
+    // yAngle += 1;
   }
 
   if (key == 'x') {
     xAngle += 1;
   } else if (key == 's') {
     xAngle -= 1;
+  }
+}
+
+void keyReleased() {
+  if (keyCode == RIGHT) {
+    rightKeyDown = false;
+  } else if (keyCode == LEFT) {
+    leftKeyDown = false;
+  } else if (keyCode == UP) {
+    upKeyDown = false;
+  } else if (keyCode == DOWN) {
+    downKeyDown = false;
   }
 }
 
