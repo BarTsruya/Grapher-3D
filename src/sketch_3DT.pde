@@ -1,4 +1,4 @@
-
+  
 PVector iHat=new PVector(15, 0, 0);
 PVector jHat=new PVector(0, 15, 0);
 PVector kHat=new PVector(0, 0, 15);
@@ -25,6 +25,8 @@ boolean rightKeyDown = false, leftKeyDown = false, upKeyDown = false, downKeyDow
 
 float zoom;
 
+String[] lines;
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
   size(800, 800);
@@ -44,8 +46,9 @@ void setup() {
    PVector u = transMatrix.transVec(vectors[6]);
    printVec(u);
    */
-
-  int[][] funArr = {{1, 2,0},{1, 0,2}}; //{1, 0,2}
+  
+  int[][] funArr = readFuncFromText();
+  
   F = new Function(funArr);
   funFont = createFont("Arial", 20, true);
   textFont(funFont);
@@ -70,6 +73,36 @@ void setup() {
   //print(kitsonPoints[0].x+","+kitsonPoints[0].y);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+int[][] readFuncFromText(){
+  String funcRaw = loadStrings("func.txt")[0]; // Get the first line
+  return parse2DArray(funcRaw);
+}
+
+int[][] parse2DArray(String input) {
+    // Remove outer braces
+    input = input.trim();
+    if (input.startsWith("{{") && input.endsWith("}}")) {
+        input = input.substring(2, input.length() - 2);
+    }
+
+    // println("New input: " + input);
+    // Split into rows using "},{" as the delimiter
+    String[] rowStrings = input.split("\\},\\{");
+
+    int[][] result = new int[rowStrings.length][];
+
+    for (int i = 0; i < rowStrings.length; i++) {
+        String[] nums = rowStrings[i].split(",");
+        result[i] = new int[nums.length];
+        for (int j = 0; j < nums.length; j++) {
+            result[i][j] = Integer.parseInt(nums[j].trim());
+        }
+    }
+
+    return result;
+}
+
 
 Matrix getZoomMat(float z) {
   float[][] zr = {{z, 0, 0}, {0, z, 0}, {0, 0, z}};
